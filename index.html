@@ -79,6 +79,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { scroll-behavior: smooth; }
 body {
   margin: 0;
@@ -326,9 +327,10 @@ footer { max-width: 1080px; margin: 0 auto; padding-block: 0 40px; display: flex
   padding: calc(env(safe-area-inset-top, 0px) + 12vh) max(16px, env(safe-area-inset-right, 0px)) 16px max(16px, env(safe-area-inset-left, 0px));
 }
 .k-panel { width: 100%; max-width: 560px; background: var(--glass-strong); overflow: hidden; display: flex; flex-direction: column; }
+.k-head { display: flex; align-items: center; gap: 8px; padding-right: 12px; border-bottom: 1px solid var(--edge-low); }
 .k-panel input {
-  font: 500 18px/1.4 var(--body); color: var(--ink); background: transparent; border: 0; outline: 0;
-  padding: 20px 22px; border-bottom: 1px solid var(--edge-low);
+  flex: 1; min-width: 0; font: 500 18px/1.4 var(--body); color: var(--ink); background: transparent; border: 0; outline: 0;
+  padding: 20px 22px;
 }
 .k-panel input::placeholder { color: var(--muted); }
 .k-list { list-style: none; margin: 0; padding: 8px; max-height: min(52vh, 420px); overflow-y: auto; }
@@ -662,7 +664,12 @@ kbd { font: 500 11px/1 var(--mono); padding: 4px 6px; border-radius: 6px; backgr
 
 <div class="k-wrap" id="k" hidden>
   <div class="k-panel glass" role="dialog" aria-modal="true" aria-label="Search the site">
-    <input id="k-input" type="text" placeholder="Jump to a section, project or link" autocomplete="off" aria-controls="k-list">
+    <div class="k-head">
+      <input id="k-input" type="text" placeholder="Jump to a section, project or link" autocomplete="off" aria-controls="k-list">
+      <button class="icon-btn" id="k-close" type="button" aria-label="Close search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
     <ul class="k-list" id="k-list" role="listbox"></ul>
     <div class="k-foot mono"><kbd>↑</kbd> <kbd>↓</kbd> move · <kbd>Enter</kbd> open · <kbd>Esc</kbd> close</div>
   </div>
@@ -813,6 +820,7 @@ kbd { font: 500 11px/1 var(--mono); padding: 4px 6px; border-radius: 6px; backgr
   const hideK = () => { k.hidden = true; if (lastFocus) lastFocus.focus(); };
   const pick = i => { const it = shown[i]; if (!it) return; hideK(); it.run(); };
   document.getElementById('open-k').addEventListener('click', showK);
+  document.getElementById('k-close').addEventListener('click', hideK);
   k.addEventListener('click', e => { if (e.target === k) hideK(); });
   kIn.addEventListener('input', () => { sel = 0; render(); });
   kIn.addEventListener('keydown', e => {
